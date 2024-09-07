@@ -1,0 +1,172 @@
+:root {
+    --cor-primaria: #FFA300;
+    --cor-secundaria: #161623;
+    --white: #FFFFFF;
+    --black: #000000;
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--cor-secundaria);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+main {
+    width: 90%;
+    max-width: 600px; 
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--white);
+}
+
+form {
+    width: 100%; 
+}
+
+form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--cor-primaria);
+}
+
+form h3 {
+    margin-bottom: 1rem;
+    color: var(--cor-secundaria);
+}
+
+form label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+    color: var(--cor-secundaria);
+}
+
+form input[type="text"],
+form button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form button:focus {
+    outline: none;
+    border-color: var(--cor-secundaria);
+}
+
+form button {
+    background-color: var(--cor-secundaria);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: var(--cor-primaria);
+    color: var(--cor-secundaria);
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 1.5rem;
+    }
+
+    form button {
+        font-size: 0.9rem;
+    }
+}
+
+.logo {
+    width: 20rem;
+    margin-bottom: 2rem;
+    
+}
+
+.alerta {
+    text-align: center;
+    font-weight: 700;
+    margin-top: 1rem;
+    height: 2rem;
+    color: #e90000;
+}
+
+.sucesso {
+    color: #00c02a;
+}
+
+.topico{
+    font-size: 2rem;
+    color: var(--cor-primaria);
+}
+
+.card-tarefa {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 30% auto 10% 10%;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    border-radius: 0.3rem;
+    box-shadow: 0 0 0.3rem 0.05rem #23232350;
+}
+
+.card-tarefa button {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: var(--cor-secundaria);
+    transition: border-color 0.3s ease;
+}
+
+.card-tarefa button:hover {
+    transform: scale(1.05);
+    background-color: var(--cor-primaria);
+}
+
+.btn-editar {
+    justify-content: center;
+    align-items: center;
+    background-image: url('../img/editar.svg');
+    background-size: 1.2rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: border-color 0.3s ease;
+}
+
+.btn-excluir {
+    background-image: url('../img/excluir.svg');
+    background-size: 1.2rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: border-color 0.3s ease;
+}
+
+.btn-editar, .btn-excluir {
+    color: #FFA300; /* Cor desejada para o ícone */
+}
+
+.btn-editar:hover, .btn-excluir:hover {
+    background-color: var(--cor-secundaria);
+}
