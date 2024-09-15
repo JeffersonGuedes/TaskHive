@@ -1,5 +1,4 @@
 const alerta = document.querySelector('.alerta');
-let listaTarefas = {};
 
 // Ação do button Cadastrar
 const btnCadastrar = document.querySelector('#btnCadastrar');
@@ -38,122 +37,167 @@ function receberDados() {
 }
 
 function validarDados(campo) {
-    // Se o campo for diferente de '', retorna true, senão retorna false
-    return campo != '' ? true : false;
+    return campo !== '' ? true : false;
 }
 
+/* GET */
+function listarTarefas() {
+    fetch('https://parseapi.back4app.com/parse/classes/tasks', {
+        method: 'GET',
+        headers: {
+            'X-Parse-Application-Id': 'xfbr7O9fYqZrqVoJTdcmei5VRkhu7IPJ4kfIBX0u',
+            'X-Parse-REST-API-Key': 'jksOaalBcOudSNjBUAVaEDHBrOXpUQ8m1sxzEWML',
+        }
+    })
+        .then(response => response.json())
+        .then(tarefas => {
+            const tarefasCadastradas = document.querySelector('#tarefas');
+            tarefasCadastradas.innerHTML = '';
+
+            tarefas.results.forEach(tarefa => {
+                const id = tarefa.objectId;
+                const titulo = tarefa.title;
+                const descricao = tarefa.description;
+
+                const cardTarefa = document.createElement('div');
+                cardTarefa.classList.add('card-tarefa');
+                tarefasCadastradas.appendChild(cardTarefa);
+
+                const cardTitulo = document.createElement('div');
+                cardTitulo.innerHTML = titulo;
+
+                const cardDescricao = document.createElement('div');
+                cardDescricao.innerHTML = descricao;
+
+                const btnEditar = document.createElement('button');
+                btnEditar.setAttribute('class', 'btn-editar');
+                btnEditar.setAttribute('id', id);
+                btnEditar.addEventListener('click', () => {
+                    editarTarefa(id);
+                });
+
+                const btnExcluir = document.createElement('button');
+                btnExcluir.setAttribute('class', 'btn-excluir');
+                btnExcluir.setAttribute('id', id);
+                btnExcluir.addEventListener('click', function () {
+                    excluirTarefa(id);
+                });
+
+                cardTarefa.appendChild(cardTitulo);
+                cardTarefa.appendChild(cardDescricao);
+                cardTarefa.appendChild(btnEditar);
+                cardTarefa.appendChild(btnExcluir);
+            });
+        })
+        .catch(error => console.error('Erro ao listar tarefas:', error));
+}
+
+/* POST */
 function cadastrarTarefa() {
-    const id = gerenciarID();
     const titulo = listaTarefas.titulo;
     const descricao = listaTarefas.descricao;
 
-    const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-
-    tarefas.push({ id, titulo, descricao });
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
-
-    alerta.classList.add('sucesso');
-    alerta.innerHTML = 'Tarefa cadastrada';
-    listarTarefas();
-
-    // Limpa os campos do form
-    btnLimpar.click();
-}
-
-function listarTarefas() {
-    const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-
-    const tarefasCadastradas = document.querySelector('#tarefas');
-    tarefasCadastradas.innerHTML = '';
-
-    tarefas.forEach(tarefa => {
-        // Encapsula os valores informados
-        const id = tarefa.id;
-        const titulo = tarefa.titulo;
-        const descricao = tarefa.descricao;
-
-        const cardTarefa = document.createElement('div');
-        cardTarefa.classList.add('card-tarefa');
-        tarefasCadastradas.appendChild(cardTarefa);
-        
-        const cardTitulo = document.createElement('div');
-        cardTitulo.innerHTML = titulo;
-
-        const cardDescricao = document.createElement('div');
-        cardDescricao.innerHTML = descricao;
-        
-        const btnEditar = document.createElement('button');
-        btnEditar.setAttribute('class', 'btn-editar');
-        btnEditar.setAttribute('id', id);
-        btnEditar.addEventListener('click', () => {
-            editarTarefa(id);
-        });
-
-        const btnExcluir = document.createElement('button');
-        btnExcluir.setAttribute('class', 'btn-excluir');
-        btnExcluir.setAttribute('id', id);
-        btnExcluir.addEventListener('click', function() {
-            excluirTarefa(id);
-        });
-        
-        cardTarefa.appendChild(cardTitulo);
-        cardTarefa.appendChild(cardDescricao);
-        cardTarefa.appendChild(btnEditar);
-        cardTarefa.appendChild(btnExcluir);
-    });
-}
-
-function gerenciarID() {
-    const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-
-    if (tarefas.length < 1) {
-        return 1;
-    } else {
-        const maiorID = tarefas.reduce((max, obj) => obj.id > max.id ? obj : max, tarefas[0]);
-        return maiorID.id + 1;
-    }
-}
-
-listarTarefas();
-
-function excluirTarefa(id) {
-    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-    tarefas = tarefas.filter(tarefa => tarefa.id !== id);
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
-    listarTarefas();
-}
-
-function editarTarefa(id) {
-    const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-    const tarefa = tarefas.find(tarefa => tarefa.id === id);
-
-    if (tarefa) {
-        document.querySelector('#titulo').value = tarefa.titulo;
-        document.querySelector('#descricao').value = tarefa.descricao;
-
-        btnCadastrar.innerHTML = 'Atualizar';
-
-        // Remove o evento de cadastro e adiciona o de atualização
-        btnCadastrar.removeEventListener('click', handleCadastrar);
-        btnCadastrar.addEventListener('click', function handleAtualizar(evento) {
-            evento.preventDefault();
-
-            if (!receberDados()) {
-                return;
-            }
-
-            atualizarTarefa(id);
-
-            // Restaura o botão "Cadastrar" e seus eventos originais após a atualização
-            btnCadastrar.innerHTML = 'Cadastrar';
-            btnCadastrar.removeEventListener('click', handleAtualizar);
-            btnCadastrar.addEventListener('click', handleCadastrar);
-
+    fetch('https://parseapi.back4app.com/parse/classes/tasks', {
+        method: 'POST',
+        headers: {
+            'X-Parse-Application-Id': 'xfbr7O9fYqZrqVoJTdcmei5VRkhu7IPJ4kfIBX0u',
+            'X-Parse-REST-API-Key': 'jksOaalBcOudSNjBUAVaEDHBrOXpUQ8m1sxzEWML',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            title: titulo,
+            description: descricao
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            alerta.classList.add('sucesso');
+            alerta.innerHTML = 'Tarefa cadastrada';
+            listarTarefas();
             btnLimpar.click();
-        });
-    }
+        })
+        .catch(error => console.error('Erro ao cadastrar tarefa:', error));
 }
 
+/* PUT */
+function atualizarTarefa(id) {
+    const titulo = document.querySelector('#titulo').value;
+    const descricao = document.querySelector('#descricao').value;
+
+    fetch(`https://parseapi.back4app.com/parse/classes/tasks/${id}`, {
+        method: 'PUT',
+        headers: {
+            'X-Parse-Application-Id': 'xfbr7O9fYqZrqVoJTdcmei5VRkhu7IPJ4kfIBX0u',
+            'X-Parse-REST-API-Key': 'jksOaalBcOudSNjBUAVaEDHBrOXpUQ8m1sxzEWML',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            title: titulo,
+            description: descricao
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            alerta.classList.add('sucesso');
+            alerta.innerHTML = 'Tarefa atualizada';
+            listarTarefas();
+        })
+        .catch(error => console.error('Erro ao atualizar tarefa:', error));
+}
+
+/* DELETE */
+function excluirTarefa(id) {
+    fetch(`https://parseapi.back4app.com/parse/classes/tasks/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-Parse-Application-Id': 'xfbr7O9fYqZrqVoJTdcmei5VRkhu7IPJ4kfIBX0u',
+            'X-Parse-REST-API-Key': 'jksOaalBcOudSNjBUAVaEDHBrOXpUQ8m1sxzEWML',
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            listarTarefas();
+        })
+        .catch(error => console.error('Erro ao excluir tarefa:', error));
+}
+
+/* GET by id */
+function editarTarefa(id) {
+    fetch(`https://parseapi.back4app.com/parse/classes/tasks/${id}`, {
+        method: 'GET',
+        headers: {
+            'X-Parse-Application-Id': 'xfbr7O9fYqZrqVoJTdcmei5VRkhu7IPJ4kfIBX0u',
+            'X-Parse-REST-API-Key': 'jksOaalBcOudSNjBUAVaEDHBrOXpUQ8m1sxzEWML',
+        },
+    })
+        .then(response => response.json())
+        .then(tarefa => {
+            document.querySelector('#titulo').value = tarefa.title;
+            document.querySelector('#descricao').value = tarefa.description;
+
+            btnCadastrar.innerHTML = 'Atualizar';
+
+            btnCadastrar.removeEventListener('click', handleCadastrar);
+            btnCadastrar.addEventListener('click', function handleAtualizar(evento) {
+                evento.preventDefault();
+
+                if (!receberDados()) {
+                    return;
+                }
+
+                atualizarTarefa(id);
+
+                btnCadastrar.innerHTML = 'Cadastrar';
+                btnCadastrar.removeEventListener('click', handleAtualizar);
+                btnCadastrar.addEventListener('click', handleCadastrar);
+
+                btnLimpar.click();
+            });
+        })
+        .catch(error => console.error('Erro ao buscar tarefa:', error));
+}
+
+/* Handle cadastrar */
 function handleCadastrar(evento) {
     evento.preventDefault();
 
@@ -168,23 +212,8 @@ function handleCadastrar(evento) {
 function removerAlerta(elemento, tempo) {
     setTimeout(() => {
         elemento.innerHTML = '';
-    }, tempo);   // 1 segundo == 1000 milissegundos
+    }, tempo);
 }
 
-function atualizarTarefa(id) {
-    const titulo = document.querySelector('#titulo').value;
-    const descricao = document.querySelector('#descricao').value;
-
-    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
-
-    // Atualiza os dados da tarefa com o ID correspondente
-    tarefas = tarefas.map(tarefa => {
-        if (tarefa.id === id) {
-            return { ...tarefa, titulo, descricao };
-        }
-        return tarefa;
-    });
-
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
-    listarTarefas();
-}
+// Listar tarefas ao carregar a página
+listarTarefas();
