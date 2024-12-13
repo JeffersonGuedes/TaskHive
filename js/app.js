@@ -46,7 +46,6 @@ function listarTarefas() {
         method: 'GET',
         headers: {
             'X-Parse-Application-Id': 'xfbr7O9fYqZrqVoJTdcmei5VRkhu7IPJ4kfIBX0u',
-            'X-Parse-REST-API-Key': 'jksOaalBcOudSNjBUAVaEDHBrOXpUQ8m1sxzEWML',
         }
     })
         .then(response => response.json())
