@@ -1,11 +1,9 @@
 const alerta = document.querySelector('.alerta');
 let listaTarefas = {};
 
-// Ação do button Cadastrar
 const btnCadastrar = document.querySelector('#btnCadastrar');
 btnCadastrar.addEventListener('click', handleCadastrar);
 
-// Ação do button Limpar
 const btnLimpar = document.querySelector('#btnLimpar');
 btnLimpar.style.display = 'none';
 
@@ -14,21 +12,18 @@ function receberDados() {
     const descricao = document.querySelector('#descricao');
     alerta.classList.remove('sucesso');
 
-    // Verifica se foi preenchido o título
     if (!validarDados(titulo.value)) {
         titulo.focus();
         alerta.innerHTML = 'Preencha o campo título';
         return false;
     }
 
-    // Verifica se foi preenchido a descrição
     if (!validarDados(descricao.value)) {
         descricao.focus();
         alerta.innerHTML = 'Preencha o campo descrição';
         return false;
     }
 
-    // Adiciona o objeto no array
     listaTarefas = {
         titulo: titulo.value,
         descricao: descricao.value,
@@ -38,7 +33,6 @@ function receberDados() {
 }
 
 function validarDados(campo) {
-    // Se o campo for diferente de '', retorna true, senão retorna false
     return campo != '' ? true : false;
 }
 
@@ -56,7 +50,6 @@ function cadastrarTarefa() {
     alerta.innerHTML = 'Tarefa cadastrada';
     listarTarefas();
 
-    // Limpa os campos do form
     btnLimpar.click();
 }
 
@@ -67,7 +60,6 @@ function listarTarefas() {
     tarefasCadastradas.innerHTML = '';
 
     tarefas.forEach(tarefa => {
-        // Encapsula os valores informados
         const id = tarefa.id;
         const titulo = tarefa.titulo;
         const descricao = tarefa.descricao;
@@ -133,7 +125,6 @@ function editarTarefa(id) {
 
         btnCadastrar.innerHTML = 'Atualizar';
 
-        // Remove o evento de cadastro e adiciona o de atualização
         btnCadastrar.removeEventListener('click', handleCadastrar);
         btnCadastrar.addEventListener('click', function handleAtualizar(evento) {
             evento.preventDefault();
@@ -144,7 +135,6 @@ function editarTarefa(id) {
 
             atualizarTarefa(id);
 
-            // Restaura o botão "Cadastrar" e seus eventos originais após a atualização
             btnCadastrar.innerHTML = 'Cadastrar';
             btnCadastrar.removeEventListener('click', handleAtualizar);
             btnCadastrar.addEventListener('click', handleCadastrar);
@@ -168,7 +158,7 @@ function handleCadastrar(evento) {
 function removerAlerta(elemento, tempo) {
     setTimeout(() => {
         elemento.innerHTML = '';
-    }, tempo);   // 1 segundo == 1000 milissegundos
+    }, tempo);
 }
 
 function atualizarTarefa(id) {
@@ -177,7 +167,6 @@ function atualizarTarefa(id) {
 
     let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
 
-    // Atualiza os dados da tarefa com o ID correspondente
     tarefas = tarefas.map(tarefa => {
         if (tarefa.id === id) {
             return { ...tarefa, titulo, descricao };

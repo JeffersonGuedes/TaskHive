@@ -1,10 +1,8 @@
 const alerta = document.querySelector('.alerta');
 
-// Ação do button Cadastrar
 const btnCadastrar = document.querySelector('#btnCadastrar');
 btnCadastrar.addEventListener('click', handleCadastrar);
 
-// Ação do button Limpar
 const btnLimpar = document.querySelector('#btnLimpar');
 btnLimpar.style.display = 'none';
 
@@ -13,21 +11,18 @@ function receberDados() {
     const descricao = document.querySelector('#descricao');
     alerta.classList.remove('sucesso');
 
-    // Verifica se foi preenchido o título
     if (!validarDados(titulo.value)) {
         titulo.focus();
         alerta.innerHTML = 'Preencha o campo título';
         return false;
     }
 
-    // Verifica se foi preenchido a descrição
     if (!validarDados(descricao.value)) {
         descricao.focus();
         alerta.innerHTML = 'Preencha o campo descrição';
         return false;
     }
 
-    // Adiciona o objeto no array
     listaTarefas = {
         titulo: titulo.value,
         descricao: descricao.value,
@@ -40,7 +35,6 @@ function validarDados(campo) {
     return campo !== '' ? true : false;
 }
 
-/* GET */
 function listarTarefas() {
     fetch('https://parseapi.back4app.com/parse/classes/tasks', {
         method: 'GET',
@@ -91,7 +85,6 @@ function listarTarefas() {
         .catch(error => console.error('Erro ao listar tarefas:', error));
 }
 
-/* POST */
 function cadastrarTarefa() {
     const titulo = listaTarefas.titulo;
     const descricao = listaTarefas.descricao;
@@ -118,7 +111,6 @@ function cadastrarTarefa() {
         .catch(error => console.error('Erro ao cadastrar tarefa:', error));
 }
 
-/* PUT */
 function atualizarTarefa(id) {
     const titulo = document.querySelector('#titulo').value;
     const descricao = document.querySelector('#descricao').value;
@@ -144,7 +136,6 @@ function atualizarTarefa(id) {
         .catch(error => console.error('Erro ao atualizar tarefa:', error));
 }
 
-/* DELETE */
 function excluirTarefa(id) {
     fetch(`https://parseapi.back4app.com/parse/classes/tasks/${id}`, {
         method: 'DELETE',
@@ -160,7 +151,6 @@ function excluirTarefa(id) {
         .catch(error => console.error('Erro ao excluir tarefa:', error));
 }
 
-/* GET by id */
 function editarTarefa(id) {
     fetch(`https://parseapi.back4app.com/parse/classes/tasks/${id}`, {
         method: 'GET',
@@ -196,7 +186,6 @@ function editarTarefa(id) {
         .catch(error => console.error('Erro ao buscar tarefa:', error));
 }
 
-/* Handle cadastrar */
 function handleCadastrar(evento) {
     evento.preventDefault();
 
@@ -214,5 +203,4 @@ function removerAlerta(elemento, tempo) {
     }, tempo);
 }
 
-// Listar tarefas ao carregar a página
 listarTarefas();
